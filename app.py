@@ -3,11 +3,40 @@ app = Flask(__name__, template_folder='.')
 
 BED_AVAILABILITY = {"General Wards":14,"ICU Wards":3,"Emergency Wards":5,"Special Wards":2}
 BLOOD_BANK_DATA = {
-    "A+": {"units":12,"nearest_bank":"City Blood Center"},
-    "B+": {"units":8,"nearest_bank":"Red Cross Metro"},
-    "O+": {"units":15,"nearest_bank":"Central Hospital Bank"},
-    "AB+": {"units":4,"nearest_bank":"City Blood Center"},
-    "O-": {"units":2,"nearest_bank":"LifeSave Blood Bank"}
+    "
+    "A+": {
+        units: 12,
+        nearest_bank: "City Blood Center"
+    },
+    "A-": {
+        units: 6,
+        nearest_bank: "Red Cross Metro"
+    },
+    "B+": {
+        units: 8,
+        nearest_bank: "Red Cross Metro"
+    },
+    "B-": {
+        units: 3,
+        nearest_bank: "LifeSave Blood Bank"
+    },
+    "O+": {
+        units: 15,
+        nearest_bank: "Central Hospital Bank"
+    },
+    "O-": {
+        units: 2,
+        nearest_bank: "LifeSave Blood Bank"
+    },
+    "AB+": {
+        units: 4,
+        nearest_bank: "City Blood Center"
+    },
+    "AB-": {
+        units: 1,
+        nearest_bank: "Central Hospital Bank"
+    }
+};
 }
 
 @app.route("/")
