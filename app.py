@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-app = app Flask(__name__, template_folder='.')
+app = Flask(__name__)
 
 BED_AVAILABILITY = {"General Wards":14,"ICU Wards":3,"Emergency Wards":5,"Special Wards":2}
 BLOOD_BANK_DATA = {
