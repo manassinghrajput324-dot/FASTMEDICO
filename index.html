@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FASTMEDICO - Healthcare Ecosystem</title>
+<style>
+*{box-sizing:border-box;font-family:Segoe UI,Tahoma,sans-serif;margin:0;padding:0}
+body{background:#f4f7f6;color:#333}
+header{background:#005b96;color:#fff;padding:20px;text-align:center}
+nav{background:#03396c;display:flex;justify-content:center;gap:15px;padding:10px;flex-wrap:wrap}
+nav a{color:#fff;text-decoration:none;font-weight:bold;padding:5px 10px}
+nav a:hover{background:#6497b1;border-radius:4px}
+.container{max-width:1100px;margin:20px auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.card{background:#fff;border-radius:8px;padding:20px;box-shadow:0 4px 6px rgba(0,0,0,.1)}
+.card h3{color:#005b96;margin-bottom:10px}
+form{display:flex;flex-direction:column;gap:10px}
+input,select,button,textarea{padding:10px;border:1px solid #ccc;border-radius:4px}
+button{background:#005b96;color:#fff;font-weight:bold;border:none;cursor:pointer}
+button:hover{background:#011f4b}
+.btn-danger{background:#d9534f}.btn-danger:hover{background:#c9302c}
+#output{margin-top:15px;padding:10px;background:#e9ecef;border-radius:4px}
+</style>
+</head>
+<body>
+<header><h1>FASTMEDICO</h1><p>Smart Integrated Healthcare Ecosystem</p></header>
+<nav>
+<a href="#appointments">Appointments</a><a href="#beds">Bed Status</a>
+<a href="#blood">Blood Bank</a><a href="#chatbot">AI Chatbot</a>
+</nav>
+<div class="container">
+<div class="card" style="border-left:5px solid #d9534f;margin-bottom:20px">
+<h3>Emergency Assistance (SOS)</h3><p>Demo emergency assistance system.</p><br>
+<button class="btn-danger" onclick="triggerSOS()">TRIGGER EMERGENCY SOS</button>
+</div>
+<div class="grid">
+<div class="card" id="appointments"><h3>Book Appointment</h3>
+<form id="appointmentForm">
+<select id="dept" required><option value="">Select Department</option><option>Cardiology</option><option>Neurology</option><option>General OPD</option></select>
+<input type="text" id="doctor" placeholder="Doctor Name" required>
+<input type="datetime-local" id="timeSlot" required>
+<button type="submit">Confirm Appointment</button>
+</form></div>
+<div class="card" id="chatbot"><h3>AI Health Assistant</h3><p>Enter symptoms for preliminary demo guidance:</p><br>
+<form id="chatbotForm"><textarea id="symptoms" placeholder="e.g. fever, headache, cough" required></textarea>
+<button type="submit">Analyze Symptoms</button></form></div>
+<div class="card" id="beds"><h3>Bed Availability</h3>
+<button onclick="checkBeds()">Fetch Current Bed Status</button><div id="bedData" style="margin-top:10px"></div></div>
+<div class="card" id="blood"><h3>Blood Bank Availability</h3>
+<form id="bloodForm"><select id="bloodGroup" required><option value="">Select Blood Group</option>
+<option>A+</option><option>B+</option><option>O+</option><option>AB+</option><option>O-</option></select>
+<button type="submit">Search Units</button></form></div>
+</div>
+<div id="output"><strong>System Status:</strong> Ready for user interaction.</div>
+</div>
+<script>
+const output=document.getElementById('output');
+document.getElementById('appointmentForm').addEventListener('submit',async e=>{
+e.preventDefault();const data={department:dept.value,doctor:doctor.value,time:timeSlot.value};
+try{const res=await fetch('/api/book-appointment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+const result=await res.json();output.innerHTML='<strong>Appointment:</strong> '+result.message}catch{output.innerHTML='<strong>Error:</strong> Server unavailable.'}});
+document.getElementById('chatbotForm').addEventListener('submit',async e=>{
+e.preventDefault();try{const res=await fetch('/api/chatbot',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symptoms:symptoms.value})});
+const result=await res.json();output.innerHTML='<strong>AI Guidance:</strong> '+result.guidance}catch{output.innerHTML='<strong>Error:</strong> Server unavailable.'}});
+async function checkBeds(){try{const res=await fetch('/api/beds');const data=await res.json();let html='<ul>';for(let ward in data)html+='<li><strong>'+ward+':</strong> '+data[ward]+' available</li>';html+='</ul>';bedData.innerHTML=html}catch{bedData.innerHTML='Unable to fetch bed status.'}}
+document.getElementById('bloodForm').addEventListener('submit',async e=>{
+e.preventDefault();const group=bloodGroup.value;try{const res=await fetch('/api/blood?group='+encodeURIComponent(group));const data=await res.json();output.innerHTML='<strong>Blood Availability:</strong> '+data.units+' units of '+group+' available at '+data.nearest_bank+'.'}catch{output.innerHTML='<strong>Error:</strong> Server unavailable.'}});
+async function triggerSOS(){try{const res=await fetch('/api/sos',{method:'POST'});const result=await res.json();output.innerHTML='<strong style="color:red">EMERGENCY ALERT:</strong> '+result.message}catch{output.innerHTML='<strong>Error:</strong> Server unavailable.'}}
+</script>
+</body></html>
